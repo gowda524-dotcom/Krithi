@@ -2,187 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Birthday Surprise</title>
-  <style>
-    body, html {
-      margin: 0; padding: 0;
-      width: 100%; height: 100%;
-      font-family: 'Poppins', sans-serif;
-      overflow: hidden;
-      background: radial-gradient(circle at top, #1b0034, #000);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .page {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0; left: 0;
-    }
-    .active { display: flex; }
-
-    /* Gift box */
-    .gift-box {
-      width: 150px; height: 150px;
-      background: linear-gradient(45deg, #ff0077, #ffbb00);
-      border-radius: 15px;
-      position: relative;
-      box-shadow: 0 0 20px #ff0077, 0 0 40px #ffbb00;
-      cursor: pointer;
-    }
-    .gift-lid {
-      width: 160px; height: 40px;
-      background: linear-gradient(45deg, #ffbb00, #ff0077);
-      border-radius: 10px;
-      position: absolute; top: -40px; left: -5px;
-    }
-
-    /* Countdown text */
-    .countdown {
-      font-size: 60px;
-      font-weight: bold;
-      text-shadow: 0 0 20px cyan, 0 0 40px blue;
-      animation: pulse 1s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-
-    .btn {
-      margin-top: 20px;
-      padding: 12px 24px;
-      background: #ff0077;
-      border: none;
-      border-radius: 30px;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #ff0077, 0 0 20px #ff0077;
-    }
-  </style>
 </head>
 <body>
-  <!-- Page 1: Intro -->
-  <div class="page active" id="page1">
-    <div class="gift-box" onclick="nextPage(2)">
-      <div class="gift-lid"></div>
-    </div>
-    <h2>🎁 Tap the gift to open your surprise 🎉</h2>
-  </div>
 
-  <!-- Page 2: Countdown -->
-  <div class="page" id="page2">
-    <div class="countdown" id="countdown">3</div>
-    <button class="btn" onclick="nextPage(3)">Skip ⏩</button>
-  </div>
+<!-- Page 1: Intro -->
+<div id="page1">
+  <h1>🎁 Click below to open your surprise 🎉</h1>
+  <a href="#page2">Start Surprise</a>
+</div>
 
-  <script>
-    let currentPage = 1;
-    function nextPage(n) {
-      document.getElementById("page" + currentPage).classList.remove("active");
-      document.getElementById("page" + n).classList.add("active");
-      currentPage = n;
+<!-- Page 2 -->
+<div id="page2">
+  <h2>🎂 Happy Birthday! 🎂</h2>
+  <img src="krithi1.jpg" alt="Photo 1" width="300">
+  <p>You are the brightest star in my life ✨</p>
+  <a href="#page3">Next ➡️</a>
+</div>
 
-      if (n === 2) {
-        let count = 3;
-        const cd = document.getElementById("countdown");
-        const interval = setInterval(() => {
-          count--;
-          if (count === 0) {
-            clearInterval(interval);
-            nextPage(3);
-          } else {
-            cd.innerText = count;
-          }
-        }, 1000);
-      }
-    }
-  </script>
+<!-- Page 3 -->
+<div id="page3">
+  <h2>🌸 Special Memory 🌸</h2>
+  <img src="krithi2.jpg" alt="Photo 2" width="300">
+  <p>Every moment with you is magical 💖</p>
+  <a href="#page4">Next ➡️</a>
+</div>
+
+<!-- Page 4 -->
+<div id="page4">
+  <h2>💎 Wish for You 💎</h2>
+  <img src="krithi3.jpg" alt="Photo 3" width="300">
+  <p>You shine like a rare gem 🌟</p>
+  <a href="#page5">Next ➡️</a>
+</div>
+
+<!-- Page 5 -->
+<div id="page5">
+  <h2>🎁 Another Surprise 🎁</h2>
+  <img src="krithi4.jpg" alt="Photo 4" width="300">
+  <p>Here’s a gift of happiness, love, and blessings for you 💕</p>
+  <a href="#page6">Next ➡️</a>
+</div>
+
+<!-- Page 6 -->
+<div id="page6">
+  <h2>🦋 A Magical Wish 🦋</h2>
+  <img src="krithi5.jpg" alt="Photo 5" width="300">
+  <p>May your life be as colorful and magical as a rainbow 🌈</p>
+  <a href="#page7">Next ➡️</a>
+</div>
+
+<!-- Page 7: Grand Finale -->
+<div id="page7">
+  <h2>🎇 Final Birthday Message 🎇</h2>
+  <img src="krithi6.jpg" alt="Photo 6" width="300">
+  <p>
+    🎂 Wishing you a birthday filled with joy, success, and endless love.  
+    You are truly special, and the world shines brighter with you in it ✨
+  </p>
+  <a href="#page1">Replay 🔄</a>
+</div>
+
 </body>
 </html>
-<!-- Page 3: Floating Memories -->
-  <div class="page" id="page3">
-    <h2>✨ Every memory with you is magical ✨</h2>
-    <div class="floating">
-      <img src="krithi1.jpg" class="float-img" alt="Memory 1">
-      <img src="krithi2.jpg" class="float-img" alt="Memory 2">
-      <img src="krithi3.jpg" class="float-img" alt="Memory 3">
-    </div>
-    <button class="btn" onclick="nextPage(4)">Next ➡️</button>
-  </div>
-
-  <!-- Page 4: Carousel Wishes -->
-  <div class="page" id="page4">
-    <h2>🌸 Special Wishes Just for You 🌸</h2>
-    <div class="carousel">
-      <div class="slide active">
-        <img src="krithi2.jpg" class="photo" alt="Wish 1">
-        <p>💖 You make life bloom with joy 🌸</p>
-      </div>
-      <div class="slide">
-        <img src="krithi3.jpg" class="photo" alt="Wish 2">
-        <p>💎 You shine like a star 💫</p>
-      </div>
-      <div class="slide">
-        <img src="krithi4.jpg" class="photo" alt="Wish 3">
-        <p>💕 You are truly one of a kind ✨</p>
-      </div>
-    </div>
-    <button class="btn" onclick="prevSlide()">⬅️</button>
-    <button class="btn" onclick="nextSlide()">➡️</button>
-    <button class="btn" onclick="nextPage(5)">Next Page ⏩</button>
-  </div>
-  /* Floating memories */
-.floating {
-  position: relative;
-  width: 100%; height: 300px;
-}
-.float-img {
-  width: 120px; height: 120px;
-  border-radius: 20px;
-  position: absolute;
-  animation: float 6s infinite alternate;
-}
-.float-img:nth-child(1) { top: 20px; left: 20px; animation-delay: 0s; }
-.float-img:nth-child(2) { top: 100px; left: 180px; animation-delay: 2s; }
-.float-img:nth-child(3) { top: 40px; left: 300px; animation-delay: 4s; }
-
-@keyframes float {
-  from { transform: translateY(0); }
-  to { transform: translateY(-30px); }
-}
-
-/* Carousel */
-.carousel { position: relative; }
-.slide {
-  display: none;
-  text-align: center;
-}
-.slide.active { display: block; }
-.photo {
-  width: 250px; height: 250px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 5px solid #fff;
-  box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
-  margin-bottom: 10px;
-}
-let currentSlide = 0;
-function showSlide(n) {
-  let slides = document.querySelectorAll(".slide");
-  slides[currentSlide].classList.remove("active");
-  currentSlide = (n + slides.length) % slides.length;
-  slides[currentSlide].classList.add("active");
-}
-function nextSlide() { showSlide(currentSlide + 1); }
-function prevSlide() { showSlide(currentSlide - 1); }
