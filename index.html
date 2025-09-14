@@ -6,7 +6,6 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       height: 100vh;
       overflow: hidden;
       display: flex;
@@ -23,32 +22,40 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Cube */
-    #cube-container {
-      perspective: 1500px;
+    .shape {
+      position: absolute;
       width: 600px;
       height: 600px;
-      position: relative;
-      z-index: 2;
+      perspective: 1500px;
+      opacity: 0;
+      transition: opacity 2s ease;
+      pointer-events: none;
     }
 
-    .cube {
+    .shape.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cube, .pyramid, .sphere {
       width: 100%;
       height: 100%;
       position: absolute;
       transform-style: preserve-3d;
-      animation: rotateCube 25s infinite linear;
+      animation: rotate 25s infinite linear;
+    }
+
+    @keyframes rotate {
+      from { transform: rotateX(0) rotateY(0); }
+      to { transform: rotateX(360deg) rotateY(360deg); }
     }
 
     .face {
       position: absolute;
-      width: 600px;
-      height: 600px;
-      backface-visibility: hidden;
-      border: 6px solid #fff;
-      border-radius: 30px;
+      border: 4px solid #fff;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
     .face img {
@@ -57,176 +64,205 @@
       object-fit: cover;
     }
 
-    .front  { transform: rotateY(0deg) translateZ(300px); }
-    .back   { transform: rotateY(180deg) translateZ(300px); }
-    .right  { transform: rotateY(90deg) translateZ(300px); }
-    .left   { transform: rotateY(-90deg) translateZ(300px); }
-    .top    { transform: rotateX(90deg) translateZ(300px); }
-    .bottom { transform: rotateX(-90deg) translateZ(300px); }
+    /* Cube Faces */
+    .cube .face { width: 600px; height: 600px; }
+    .cube .front  { transform: rotateY(0deg) translateZ(300px); }
+    .cube .back   { transform: rotateY(180deg) translateZ(300px); }
+    .cube .right  { transform: rotateY(90deg) translateZ(300px); }
+    .cube .left   { transform: rotateY(-90deg) translateZ(300px); }
+    .cube .top    { transform: rotateX(90deg) translateZ(300px); }
+    .cube .bottom { transform: rotateX(-90deg) translateZ(300px); }
 
-    @keyframes rotateCube {
-      from { transform: rotateX(0deg) rotateY(0deg); }
-      to   { transform: rotateX(360deg) rotateY(360deg); }
+    /* Pyramid */
+    .pyramid .face { width: 600px; height: 600px; opacity: 0.95; }
+    .pyramid .front  { transform: rotateY(0deg) rotateX(60deg) translateZ(300px); }
+    .pyramid .right  { transform: rotateY(90deg) rotateX(60deg) translateZ(300px); }
+    .pyramid .back   { transform: rotateY(180deg) rotateX(60deg) translateZ(300px); }
+    .pyramid .left   { transform: rotateY(-90deg) rotateX(60deg) translateZ(300px); }
+    .pyramid .bottom { transform: rotateX(-90deg) translateZ(300px); }
+
+    /* Sphere Approximation */
+    .sphere .face {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
     }
 
     /* Confetti */
     .confetti {
-      position: fixed;
+      position: absolute;
       width: 10px;
-      height: 10px;
-      top: -10px;
-      animation: fall linear forwards;
-      opacity: 0.9;
-      z-index: 1;
+      height: 20px;
+      background: red;
+      top: -20px;
+      animation: fall 5s linear infinite;
     }
-
     @keyframes fall {
-      to {
-        transform: translateY(110vh) rotate(720deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(110vh) rotate(360deg); }
     }
 
     /* Balloons */
     .balloon {
-      position: fixed;
-      bottom: -100px;
-      width: 50px;
-      height: 70px;
-      border-radius: 50%;
-      background-color: red;
-      opacity: 0.8;
-      animation: floatUp 12s linear infinite;
-      z-index: 1;
+      position: absolute;
+      bottom: -150px;
+      width: 60px;
+      height: 80px;
+      background: pink;
+      border-radius: 50% 50% 50% 50%;
+      animation: float 10s linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-120vh); }
     }
 
-    @keyframes floatUp {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
-    }
-
-    /* Fireworks Canvas */
+    /* Fireworks */
     canvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
       pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <!-- Fireworks -->
-  <canvas id="fireworks"></canvas>
-
   <!-- Cube -->
-  <div id="cube-container">
+  <div class="shape active" id="cubeShape">
     <div class="cube">
-      <div class="face front"><img src="krithi1.jpg" alt="Krithi 1"></div>
-      <div class="face back"><img src="krithi2.jpg" alt="Krithi 2"></div>
-      <div class="face right"><img src="krithi3.jpg" alt="Krithi 3"></div>
-      <div class="face left"><img src="krithi4.jpg" alt="Krithi 4"></div>
-      <div class="face top"><img src="krithi5.jpg" alt="Krithi 5"></div>
-      <div class="face bottom"><img src="krithi6.jpg" alt="Krithi 6"></div>
+      <div class="face front"><img src="krithi1.jpg"></div>
+      <div class="face back"><img src="krithi2.jpg"></div>
+      <div class="face right"><img src="krithi3.jpg"></div>
+      <div class="face left"><img src="krithi4.jpg"></div>
+      <div class="face top"><img src="krithi5.jpg"></div>
+      <div class="face bottom"><img src="krithi6.jpg"></div>
     </div>
   </div>
 
+  <!-- Pyramid -->
+  <div class="shape" id="pyramidShape">
+    <div class="pyramid">
+      <div class="face front"><img src="krithi1.jpg"></div>
+      <div class="face right"><img src="krithi2.jpg"></div>
+      <div class="face back"><img src="krithi3.jpg"></div>
+      <div class="face left"><img src="krithi4.jpg"></div>
+      <div class="face bottom"><img src="krithi5.jpg"></div>
+    </div>
+  </div>
+
+  <!-- Sphere-like -->
+  <div class="shape" id="sphereShape">
+    <div class="sphere">
+      <div class="face" style="transform: rotateY(0deg) translateZ(300px);"><img src="krithi1.jpg"></div>
+      <div class="face" style="transform: rotateY(60deg) translateZ(300px);"><img src="krithi2.jpg"></div>
+      <div class="face" style="transform: rotateY(120deg) translateZ(300px);"><img src="krithi3.jpg"></div>
+      <div class="face" style="transform: rotateY(180deg) translateZ(300px);"><img src="krithi4.jpg"></div>
+      <div class="face" style="transform: rotateY(240deg) translateZ(300px);"><img src="krithi5.jpg"></div>
+      <div class="face" style="transform: rotateY(300deg) translateZ(300px);"><img src="krithi6.jpg"></div>
+    </div>
+  </div>
+
+  <!-- Canvas for fireworks -->
+  <canvas id="fireworks"></canvas>
+
   <script>
-    // 🎆 Confetti
-    function createConfetti() {
-      let confetti = document.createElement("div");
-      confetti.classList.add("confetti");
-      document.body.appendChild(confetti);
+    // Shape switching with fade
+    let shapes = ["cubeShape", "pyramidShape", "sphereShape"];
+    let current = 0;
+    setInterval(() => {
+      document.getElementById(shapes[current]).classList.remove("active");
+      current = (current + 1) % shapes.length;
+      document.getElementById(shapes[current]).classList.add("active");
+    }, 10000);
 
-      let colors = ["#ff3c7d", "#ffcc00", "#33ccff", "#66ff66", "#ff6600", "#ff99ff"];
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-      confetti.style.left = Math.random() * window.innerWidth + "px";
-      confetti.style.width = Math.random() * 8 + 5 + "px";
-      confetti.style.height = confetti.style.width;
-
-      confetti.style.animationDuration = (Math.random() * 3 + 3) + "s";
-      confetti.style.transform = "rotate(" + Math.random() * 360 + "deg)";
-
-      setTimeout(() => { confetti.remove(); }, 6000);
+    // Confetti
+    for (let i = 0; i < 50; i++) {
+      let conf = document.createElement("div");
+      conf.className = "confetti";
+      conf.style.left = Math.random() * 100 + "vw";
+      conf.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
+      conf.style.animationDuration = 3 + Math.random() * 3 + "s";
+      document.body.appendChild(conf);
     }
-    setInterval(createConfetti, 100);
 
-    // 🎈 Balloons
-    function createBalloon() {
+    // Balloons
+    for (let i = 0; i < 10; i++) {
       let balloon = document.createElement("div");
-      balloon.classList.add("balloon");
+      balloon.className = "balloon";
+      balloon.style.left = Math.random() * 100 + "vw";
+      balloon.style.backgroundColor = `hsl(${Math.random()*360}, 80%, 60%)`;
+      balloon.style.animationDuration = 6 + Math.random() * 6 + "s";
       document.body.appendChild(balloon);
-
-      let colors = ["#ff6666", "#66ccff", "#ffcc00", "#99ff99", "#ff99ff"];
-      balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-      balloon.style.left = Math.random() * window.innerWidth + "px";
-      balloon.style.animationDuration = (Math.random() * 10 + 8) + "s";
-
-      setTimeout(() => { balloon.remove(); }, 15000);
     }
-    setInterval(createBalloon, 800);
 
-    // 🎇 Fireworks
+    // Fireworks
     const canvas = document.getElementById("fireworks");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-
     class Firework {
-      constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.radius = Math.random() * 2 + 1;
-        this.angle = Math.random() * 2 * Math.PI;
-        this.speed = Math.random() * 6 + 2;
-        this.life = 100;
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height;
+        this.targetY = Math.random() * canvas.height / 2;
+        this.color = `hsl(${Math.random()*360},100%,50%)`;
+        this.particles = [];
+        this.exploded = false;
       }
       update() {
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed;
-        this.life -= 2;
+        if (!this.exploded) {
+          this.y -= 5;
+          if (this.y < this.targetY) {
+            this.exploded = true;
+            for (let i = 0; i < 50; i++) {
+              this.particles.push({
+                x: this.x, y: this.y,
+                vx: Math.cos(i) * Math.random() * 4,
+                vy: Math.sin(i) * Math.random() * 4,
+                alpha: 1
+              });
+            }
+          }
+        } else {
+          this.particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= 0.02;
+          });
+        }
       }
       draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = this.color;
-        ctx.fill();
+        if (!this.exploded) {
+          ctx.fillStyle = this.color;
+          ctx.fillRect(this.x, this.y, 3, 10);
+        } else {
+          this.particles.forEach(p => {
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillRect(p.x, p.y, 3, 3);
+          });
+          ctx.globalAlpha = 1;
+        }
       }
     }
 
     let fireworks = [];
-
-    function launchFirework() {
-      let colors = ["#ff3c7d", "#ffcc00", "#33ccff", "#66ff66", "#ff6600", "#ffffff"];
-      let x = Math.random() * canvas.width;
-      let y = Math.random() * (canvas.height / 2);
-      for (let i = 0; i < 50; i++) {
-        fireworks.push(new Firework(x, y, colors[Math.floor(Math.random() * colors.length)]));
-      }
-    }
-
-    function animateFireworks() {
+    function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      fireworks.forEach((fw, index) => {
-        fw.update();
-        fw.draw();
-        if (fw.life <= 0) fireworks.splice(index, 1);
+      if (Math.random() < 0.05) fireworks.push(new Firework());
+      fireworks.forEach((f, i) => {
+        f.update();
+        f.draw();
+        if (f.exploded && f.particles.every(p => p.alpha <= 0)) {
+          fireworks.splice(i, 1);
+        }
       });
-      requestAnimationFrame(animateFireworks);
+      requestAnimationFrame(animate);
     }
-
-    setInterval(launchFirework, 1500);
-    animateFireworks();
+    animate();
   </script>
 </body>
 </html>
