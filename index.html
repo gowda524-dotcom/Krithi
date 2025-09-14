@@ -7,39 +7,29 @@
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
       height: 100vh;
       overflow: hidden;
-      font-family: 'Arial', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7, #ffb6c1);
+      background-size: 400% 400%;
+      animation: bgAnimation 12s ease infinite;
     }
 
-    /* Birthday Text */
-    h1 {
-      font-size: 3.5em;
-      color: #fff;
-      text-shadow: 0 0 15px #ff3c7d, 0 0 30px #ff6ec7, 0 0 45px #ff3c7d;
-      margin-bottom: 20px;
-      animation: glow 2s infinite alternate;
-      z-index: 2;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 15px #ff6ec7, 0 0 30px #ff3c7d; }
-      to   { text-shadow: 0 0 25px #ff3c7d, 0 0 50px #ff6ec7; }
+    @keyframes bgAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* Cube */
     #cube-container {
-      perspective: 1200px;
-      width: 400px;
-      height: 400px;
+      perspective: 1500px;
+      width: 600px;
+      height: 600px;
       position: relative;
-      margin: 0 auto;
-      z-index: 1;
+      z-index: 2;
     }
 
     .cube {
@@ -47,18 +37,18 @@
       height: 100%;
       position: absolute;
       transform-style: preserve-3d;
-      animation: rotateCube 20s infinite linear;
+      animation: rotateCube 25s infinite linear;
     }
 
     .face {
       position: absolute;
-      width: 400px;
-      height: 400px;
+      width: 600px;
+      height: 600px;
       backface-visibility: hidden;
-      border: 4px solid #fff;
-      border-radius: 20px;
+      border: 6px solid #fff;
+      border-radius: 30px;
       overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
     }
 
     .face img {
@@ -67,12 +57,12 @@
       object-fit: cover;
     }
 
-    .front  { transform: rotateY(0deg) translateZ(200px); }
-    .back   { transform: rotateY(180deg) translateZ(200px); }
-    .right  { transform: rotateY(90deg) translateZ(200px); }
-    .left   { transform: rotateY(-90deg) translateZ(200px); }
-    .top    { transform: rotateX(90deg) translateZ(200px); }
-    .bottom { transform: rotateX(-90deg) translateZ(200px); }
+    .front  { transform: rotateY(0deg) translateZ(300px); }
+    .back   { transform: rotateY(180deg) translateZ(300px); }
+    .right  { transform: rotateY(90deg) translateZ(300px); }
+    .left   { transform: rotateY(-90deg) translateZ(300px); }
+    .top    { transform: rotateX(90deg) translateZ(300px); }
+    .bottom { transform: rotateX(-90deg) translateZ(300px); }
 
     @keyframes rotateCube {
       from { transform: rotateX(0deg) rotateY(0deg); }
@@ -87,7 +77,7 @@
       top: -10px;
       animation: fall linear forwards;
       opacity: 0.9;
-      z-index: 0;
+      z-index: 1;
     }
 
     @keyframes fall {
@@ -96,11 +86,42 @@
         opacity: 0;
       }
     }
+
+    /* Balloons */
+    .balloon {
+      position: fixed;
+      bottom: -100px;
+      width: 50px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: red;
+      opacity: 0.8;
+      animation: floatUp 12s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+    }
+
+    /* Fireworks Canvas */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
-  <!-- Main Page -->
-  <h1>🎉 Happy Birthday Krithi 🎉</h1>
+  <!-- Fireworks -->
+  <canvas id="fireworks"></canvas>
+
+  <!-- Cube -->
   <div id="cube-container">
     <div class="cube">
       <div class="face front"><img src="krithi1.jpg" alt="Krithi 1"></div>
@@ -113,13 +134,13 @@
   </div>
 
   <script>
-    // Continuous confetti generator
+    // 🎆 Confetti
     function createConfetti() {
       let confetti = document.createElement("div");
       confetti.classList.add("confetti");
       document.body.appendChild(confetti);
 
-      let colors = ["#ff3c7d", "#ffcc00", "#33ccff", "#66ff66", "#ff6600"];
+      let colors = ["#ff3c7d", "#ffcc00", "#33ccff", "#66ff66", "#ff6600", "#ff99ff"];
       confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
       confetti.style.left = Math.random() * window.innerWidth + "px";
@@ -129,13 +150,83 @@
       confetti.style.animationDuration = (Math.random() * 3 + 3) + "s";
       confetti.style.transform = "rotate(" + Math.random() * 360 + "deg)";
 
-      setTimeout(() => {
-        confetti.remove();
-      }, 6000);
+      setTimeout(() => { confetti.remove(); }, 6000);
+    }
+    setInterval(createConfetti, 100);
+
+    // 🎈 Balloons
+    function createBalloon() {
+      let balloon = document.createElement("div");
+      balloon.classList.add("balloon");
+      document.body.appendChild(balloon);
+
+      let colors = ["#ff6666", "#66ccff", "#ffcc00", "#99ff99", "#ff99ff"];
+      balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+      balloon.style.left = Math.random() * window.innerWidth + "px";
+      balloon.style.animationDuration = (Math.random() * 10 + 8) + "s";
+
+      setTimeout(() => { balloon.remove(); }, 15000);
+    }
+    setInterval(createBalloon, 800);
+
+    // 🎇 Fireworks
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    class Firework {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = Math.random() * 2 + 1;
+        this.angle = Math.random() * 2 * Math.PI;
+        this.speed = Math.random() * 6 + 2;
+        this.life = 100;
+      }
+      update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.life -= 2;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
     }
 
-    // Keep dropping confetti every 100ms
-    setInterval(createConfetti, 100);
+    let fireworks = [];
+
+    function launchFirework() {
+      let colors = ["#ff3c7d", "#ffcc00", "#33ccff", "#66ff66", "#ff6600", "#ffffff"];
+      let x = Math.random() * canvas.width;
+      let y = Math.random() * (canvas.height / 2);
+      for (let i = 0; i < 50; i++) {
+        fireworks.push(new Firework(x, y, colors[Math.floor(Math.random() * colors.length)]));
+      }
+    }
+
+    function animateFireworks() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      fireworks.forEach((fw, index) => {
+        fw.update();
+        fw.draw();
+        if (fw.life <= 0) fireworks.splice(index, 1);
+      });
+      requestAnimationFrame(animateFireworks);
+    }
+
+    setInterval(launchFirework, 1500);
+    animateFireworks();
   </script>
 </body>
 </html>
