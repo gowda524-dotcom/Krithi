@@ -14,6 +14,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
     }
 
     /* Intro Page */
@@ -39,12 +40,33 @@
       text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
     }
 
+    /* Cube Page */
+    #cube-page {
+      display: none;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    #cube-page h1 {
+      font-size: 3em;
+      color: #fff;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff6ec7, 0 0 20px #ff6ec7; }
+      to   { text-shadow: 0 0 20px #ff3c7d, 0 0 40px #ff3c7d; }
+    }
+
     #cube-container {
       perspective: 1200px;
       width: 400px;
       height: 400px;
       position: relative;
-      display: none;
+      margin: 0 auto;
     }
 
     .cube {
@@ -83,6 +105,24 @@
       from { transform: rotateX(0deg) rotateY(0deg); }
       to   { transform: rotateX(360deg) rotateY(360deg); }
     }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: red;
+      top: -10px;
+      animation: fall linear forwards;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -92,15 +132,18 @@
     <p>Wishing you love, joy & happiness today and always 💖</p>
   </div>
 
-  <!-- Cube Container -->
-  <div id="cube-container">
-    <div class="cube">
-      <div class="face front"><img src="krithi1.jpg" alt="Krithi 1"></div>
-      <div class="face back"><img src="krithi2.jpg" alt="Krithi 2"></div>
-      <div class="face right"><img src="krithi3.jpg" alt="Krithi 3"></div>
-      <div class="face left"><img src="krithi4.jpg" alt="Krithi 4"></div>
-      <div class="face top"><img src="krithi5.jpg" alt="Krithi 5"></div>
-      <div class="face bottom"><img src="krithi6.jpg" alt="Krithi 6"></div>
+  <!-- Cube Page -->
+  <div id="cube-page">
+    <h1>🎂 Happy Birthday Krithi 🎂</h1>
+    <div id="cube-container">
+      <div class="cube">
+        <div class="face front"><img src="krithi1.jpg" alt="Krithi 1"></div>
+        <div class="face back"><img src="krithi2.jpg" alt="Krithi 2"></div>
+        <div class="face right"><img src="krithi3.jpg" alt="Krithi 3"></div>
+        <div class="face left"><img src="krithi4.jpg" alt="Krithi 4"></div>
+        <div class="face top"><img src="krithi5.jpg" alt="Krithi 5"></div>
+        <div class="face bottom"><img src="krithi6.jpg" alt="Krithi 6"></div>
+      </div>
     </div>
   </div>
 
@@ -110,9 +153,30 @@
       document.getElementById('intro').style.opacity = '0';
       setTimeout(() => {
         document.getElementById('intro').style.display = 'none';
-        document.getElementById('cube-container').style.display = 'block';
+        document.getElementById('cube-page').style.display = 'block';
+        startConfetti();
       }, 2000);
     }, 4000);
+
+    // Confetti blast
+    function startConfetti() {
+      for (let i = 0; i < 150; i++) {
+        let confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        document.body.appendChild(confetti);
+
+        let colors = ["#ff3c7d", "#ffcc00", "#33ccff", "#66ff66", "#ff6600"];
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        confetti.style.transform = "rotate(" + Math.random() * 360 + "deg)";
+
+        setTimeout(() => {
+          confetti.remove();
+        }, 5000);
+      }
+    }
   </script>
 </body>
 </html>
